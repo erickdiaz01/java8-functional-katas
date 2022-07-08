@@ -62,9 +62,11 @@ public class Kata11 {
         List<Map> videos = DataUtil.getVideos();
         List<Map> boxArts = DataUtil.getBoxArts();
         List<Map> bookmarkList = DataUtil.getBookmarkList();
+        List<ImmutableList> datastructure = lists.stream().map(lista->ImmutableList.of(ImmutableMap.of("name",lista.get("name"),"videos",videos.stream().map(video->ImmutableList.of(ImmutableMap.of())))))
 
-        return ImmutableList.of(ImmutableMap.of("name", "someName", "videos", ImmutableList.of(
+        return
+                /*ImmutableList.of(ImmutableMap.of("name", "someName", "videos", ImmutableList.of(
                 ImmutableMap.of("id", 5, "title", "The Chamber", "time", 123, "boxart", "someUrl")
-        )));
+        )));*/
     }
 }

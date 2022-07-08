@@ -1,13 +1,13 @@
 package katas;
 
+import com.codepoetics.protonpack.StreamUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import model.MovieList;
 import util.DataUtil;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /*
     Goal: Create a datastructure from the given data:
@@ -51,13 +51,18 @@ import java.util.Map;
     Output: the given datastructure
 */
 public class Kata10 {
-    public static List<Map> execute() {
+    public static List<ImmutableList> execute() {
         List<Map> lists = DataUtil.getLists();
         List<Map> videos = DataUtil.getVideos();
 
-        return ImmutableList.of(ImmutableMap.of("name", "someName", "videos", ImmutableList.of(
+       List<ImmutableList> dataStructure = StreamUtils.zip(lists.stream(),videos.stream(),(listasVideos,peliculas)->
+           ImmutableList.of(ImmutableMap.of("name",listasVideos.get("name"),"videos",ImmutableList.of(ImmutableMap.of("Id",peliculas.get("listId"),"Title",peliculas.get("title")))))
+       ).collect(Collectors.toList());
+
+        return dataStructure;
+                /*ImmutableList.of(ImmutableMap.of("name", "someName", "videos", ImmutableList.of(
                 ImmutableMap.of("id", 5, "title", "The Chamber"),
                 ImmutableMap.of("id", 3, "title", "Fracture")
-        )));
+        )));*/
     }
 }

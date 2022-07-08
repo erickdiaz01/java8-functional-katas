@@ -6,6 +6,7 @@ import util.DataUtil;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /*
     Goal: Create a datastructure from the given data:
@@ -57,16 +58,34 @@ import java.util.Map;
     Output: the given datastructure
 */
 public class Kata11 {
-    public static List<Map> execute() {
+    public static List<List> execute() {
         List<Map> lists = DataUtil.getLists();
         List<Map> videos = DataUtil.getVideos();
         List<Map> boxArts = DataUtil.getBoxArts();
         List<Map> bookmarkList = DataUtil.getBookmarkList();
-        List<ImmutableList> datastructure = lists.stream().map(lista->ImmutableList.of(ImmutableMap.of("name",lista.get("name"),"videos",videos.stream().map(video->ImmutableList.of(ImmutableMap.of())))))
+        List<List> datastructure = lists.stream().map(lista -> ImmutableList.of(
+                ImmutableMap.of("name", lista.get("name"), "videos", videos.stream()
+                        .filter(video -> video.get("listId") == lista.get("id"))
+                        .map(videoFiltrado -> ImmutableMap.of("id", videoFiltrado.get("id"), "title",
+                                videoFiltrado.get("title"), "time",
+                                bookmarkList.stream()
+                                        .filter(bookmark -> bookmark.get("videoId") == videoFiltrado.get("id"))
+                                        .map(bookmark -> bookmark.get("time")),
+                                "booxArt",
+                                boxArts.stream().filter(boxart -> boxart.get("videoId") == videoFiltrado.get("id"))
+                                        .map(boxFiltradas -> (int) boxFiltradas.get("width")
+                                                * (int) boxFiltradas.get("height"))
+                                        .min((o1, o2) -> Integer.compare(o1, o2))))
+                        .collect(Collectors.toList()))))
+                .collect(Collectors.toList());
 
-        return
-                /*ImmutableList.of(ImmutableMap.of("name", "someName", "videos", ImmutableList.of(
-                ImmutableMap.of("id", 5, "title", "The Chamber", "time", 123, "boxart", "someUrl")
-        )));*/
+        return datastructure;
+        /*
+         * ImmutableList.of(ImmutableMap.of("name", "someName", "videos",
+         * ImmutableList.of(
+         * ImmutableMap.of("id", 5, "title", "The Chamber", "time", 123, "boxart",
+         * "someUrl")
+         * )));
+         */
     }
 }

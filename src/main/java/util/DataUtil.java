@@ -271,7 +271,6 @@ public class DataUtil {
         result.add(new Bookmark(470, new Date()));
         result.add(new Bookmark(453, new Date()));
         result.add(new Bookmark(445, new Date()));
-        result.add(new Bookmark(478, new Date()));
         return result;
     }
 

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import util.DataUtil;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,28 +59,27 @@ import java.util.stream.Collectors;
     Output: the given datastructure
 */
 public class Kata11 {
-    public static List<List> execute() {
+    public static List<Map> execute() {
         List<Map> lists = DataUtil.getLists();
         List<Map> videos = DataUtil.getVideos();
         List<Map> boxArts = DataUtil.getBoxArts();
         List<Map> bookmarkList = DataUtil.getBookmarkList();
-        List<List> datastructure = lists.stream().map(lista -> ImmutableList.of(
-                ImmutableMap.of("name", lista.get("name"), "videos", videos.stream()
-                        .filter(video -> video.get("listId") == lista.get("id"))
-                        .map(videoFiltrado -> ImmutableMap.of("id", videoFiltrado.get("id"), "title",
-                                videoFiltrado.get("title"), "time",
-                                bookmarkList.stream()
-                                        .filter(bookmark -> bookmark.get("videoId") == videoFiltrado.get("id"))
-                                        .map(bookmark -> bookmark.get("time")),
-                                "booxArt",
-                                boxArts.stream().filter(boxart -> boxart.get("videoId") == videoFiltrado.get("id"))
-                                        .map(boxFiltradas -> (int) boxFiltradas.get("width")
-                                                * (int) boxFiltradas.get("height"))
-                                        .min((o1, o2) -> Integer.compare(o1, o2))))
-                        .collect(Collectors.toList()))))
-                .collect(Collectors.toList());
+        List<Map> kataOnce = lists.stream().map(lista -> {
 
-        return datastructure;
+            ImmutableList listaVideos = ImmutableList.of(videos.stream()
+                    .filter(video -> video.get("listId") == lista.get("id"))
+                    .map(videoFiltrado -> ImmutableMap.of("id", videoFiltrado.get("id"), "title",
+                            videoFiltrado.get("title"), "Time",
+                            bookmarkList.stream().filter(bookmark -> bookmark.get("videoId") == videoFiltrado.get("id"))
+                                    .map(bookmarkFiltrado -> bookmarkFiltrado.get("time")),
+                            "boxartUrl",
+                            boxArts.stream()
+                                    .min(Comparator.comparingInt(o -> (int) o.get("width") * (int) o.get("height")))
+                                    .map(boxart -> boxart.get("url"))))
+                    .collect(Collectors.toList()));
+            return ImmutableMap.of("name", lista.get("name"), "videos", listaVideos);
+        }).collect(Collectors.toList());
+        return kataOnce;
         /*
          * ImmutableList.of(ImmutableMap.of("name", "someName", "videos",
          * ImmutableList.of(
